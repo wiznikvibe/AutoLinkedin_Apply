@@ -2,6 +2,7 @@ from selenium import webdriver as wb
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+import time
 import json
 
 class EasyApply:
@@ -39,19 +40,24 @@ class EasyApply:
         """
         This function goes into
         """
-        jobs_link = self.driver.get("https://www.linkedin.com/jobs/")
+        try:
+            jobs_link = self.driver.get("https://www.linkedin.com/jobs/")
         
 
-        search_box = self.driver.find_element(By.XPATH,'//input[@aria-label="Search by title, skill, or company"]') 
-        search_box.clear()
-        search_box.send_keys(self.keyword)
+            search_box = self.driver.find_element(By.XPATH,'//input[@aria-label="Search by title, skill, or company"]') 
+            search_box.clear()
+            search_box.send_keys(self.keyword)
+            time.sleep(2)
+            location_box = self.driver.find_element(By.XPATH,'//input[@aria-label="City, state, or zip code"]') 
+            location_box.clear()
+            location_box.send_keys(self.location)
+            location_box.send_keys(Keys.RETURN)
 
-        location_box = self.driver.find_element(By.XPATH,'//input[@aria-label="City, state, or zip code"]') 
-        location_box.clear()
-        location_box.send_keys(self.location)
-
-        search_button = self.driver.find_element(By.XPATH, '//button[@aria-label="Search"]')
-        search_button.click()
+            search = self.driver.find_element(By.XPATH, '//button[contains(@class, "jobs-search-box__submit-button") and contains(text(), "Search")]')
+            search.click()
+            time.sleep(5)
+        except Exception as e:
+            print(e)
 
 
 
@@ -70,4 +76,5 @@ if __name__ == '__main__':
     
     bot = EasyApply(data)
     bot.login_linked()
+    time.sleep(5)
     bot.job_search()
